@@ -1,0 +1,20 @@
+name: Мой первый CI/CD Конвейер
+
+# Когда запускать робота? (При каждом push в репозиторий)
+on: [push]
+
+jobs:
+  build-and-test:
+    # На какой операционной системе роботу работать?
+    runs-on: ubuntu-latest 
+
+    # Пошаговая инструкция для робота
+    steps:
+      - name: Шаг 1. Скачиваем свежий код из репозитория
+        uses: actions/checkout@v4
+
+      - name: Шаг 2. Собираем Docker-образ
+        run: docker build -t inventory-image .
+
+      - name: Шаг 3. Рапортуем об успехе
+        run: echo "🎉 Ура! Робот GitHub только что сам собрал Docker-образ из твоего кода!"
