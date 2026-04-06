@@ -32,7 +32,7 @@ def show_items():
     rows = cursor.fetchall()
     conn.close()
     
-    html = "<h1>📦 Мой Склад</h1><ul>"
+    html = "<h1>🚀 Мой Супер Склад 2.0</h1><ul>"
     if not rows:
         html += "<li>Склад пуст</li>"
     else:

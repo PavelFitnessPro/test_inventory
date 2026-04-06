@@ -29,5 +29,13 @@ services:
     depends_on:
       - app
 
+  # --- НАШ НОВЫЙ РОБОТ CD ---
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 app
+
 volumes:
   pgdata:
