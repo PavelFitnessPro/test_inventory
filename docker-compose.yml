@@ -35,7 +35,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30 app
+    command: --interval 30
 
 volumes:
   pgdata:
