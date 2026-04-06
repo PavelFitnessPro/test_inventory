@@ -1,6 +1,9 @@
 import os
 import pg8000
 import time
+from flask import Flask
+
+app = Flask(__name__)
 
 host = os.environ.get("DB_HOST", "db")
 user = os.environ.get("DB_USER", "admin")
@@ -18,50 +21,28 @@ def init_db():
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Ошибка инициализации базы: {e}")
+        print(f"Ошибка БД: {e}")
 
+# Этот декоратор говорит: когда кто-то заходит на главную страницу (/), выполни эту функцию
+@app.route('/')
 def show_items():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM items;")
     rows = cursor.fetchall()
-    print("\n📦 --- СКЛАД ---")
+    conn.close()
+    
+    html = "<h1>📦 Мой Склад</h1><ul>"
     if not rows:
-        print("Склад пуст.")
+        html += "<li>Склад пуст</li>"
     else:
         for row in rows:
-            print(f"ID: {row[0]} | Товар: {row[1]} | Остаток: {row[2]} шт.")
-    print("-----------------\n")
-    conn.close()
-
-def add_item():
-    name = input("Введите название товара: ")
-    qty = input("Введите количество: ")
-    conn = get_connection()
-    cursor = conn.cursor()
-    # Безопасная вставка данных
-    cursor.execute("INSERT INTO items (name, qty) VALUES (%s, %s);", (name, int(qty)))
-    conn.commit()
-    print("✅ Товар успешно добавлен!")
-    conn.close()
+            html += f"<li>ID: {row[0]} | Товар: {row[1]} | Остаток: {row[2]} шт.</li>"
+    html += "</ul>"
+    return html
 
 if __name__ == "__main__":
-    print("⏳ Ожидание запуска базы данных...")
-    time.sleep(3) # Ждем, чтобы PostgreSQL точно успел включиться
+    time.sleep(3) # Ждем загрузку БД
     init_db()
-    
-    while True:
-        print("1. Посмотреть склад")
-        print("2. Добавить товар")
-        print("3. Выход")
-        choice = input("Выберите действие (1-3): ")
-        
-        if choice == '1':
-            show_items()
-        elif choice == '2':
-            add_item()
-        elif choice == '3':
-            print("Выход из системы. До свидания!")
-            break
-        else:
-            print("❌ Ошибка: Неверный ввод.")
+    # Запускаем веб-сервер Flask на порту 5000
+    app.run(host='0.0.0.0', port=5000)
