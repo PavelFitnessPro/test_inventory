@@ -10,7 +10,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    image: pavelfit/inventory-image:latest
     restart: always
     depends_on:
       - db
@@ -19,17 +19,15 @@ services:
       DB_USER: admin
       DB_PASS: secretpassword
       DB_NAME: inventory_db
-    # ВАЖНО: Мы убрали отсюда ports. Приложение больше не торчит наружу напрямую!
 
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80" # Nginx открыт всему миру
+      - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf # Подкидываем ему наши настройки
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - app # Nginx ждет, пока включится приложение
+      - app
 
 volumes:
   pgdata:
-
