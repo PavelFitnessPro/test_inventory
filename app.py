@@ -42,7 +42,20 @@ def show_items():
     return html
 
 if __name__ == "__main__":
-    time.sleep(3) # Ждем загрузку БД
+    print("⏳ Ожидание базы данных...")
+    while True:
+        try:
+            # Пытаемся подключиться
+            conn = get_connection()
+            conn.close()
+            print("✅ База данных на связи! Запускаем сервер.")
+            break # Выходим из бесконечного цикла
+        except Exception as e:
+            print("💤 База еще не готова, ждем 2 секунды...")
+            time.sleep(2)
+            
     init_db()
+    # Запускаем веб-сервер Flask на порту 5000
+    app.run(host='0.0.0.0', port=5000)
     # Запускаем веб-сервер Flask на порту 5000
     app.run(host='0.0.0.0', port=5000)
